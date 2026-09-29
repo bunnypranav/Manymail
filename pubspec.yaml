@@ -1,0 +1,81 @@
+name: manymail
+description: "Manymail: Many addresses, one app"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^3.4.3
+
+  # Persistence (structured data; never credentials)
+  drift: ^2.35.0
+  drift_flutter: ^0.3.1
+  path: ^1.9.0
+  path_provider: ^2.1.6
+
+  # Credentials only — Android Keystore backed
+  flutter_secure_storage: ^11.2.0
+
+  # MIME construction only. Its SmtpClient is deliberately not used for the
+  # send path: SmtpSendMailCommand advances from MAIL FROM to RCPT TO without
+  # checking the reply, so a 5xx sender rejection is swallowed and the send
+  # reports success. Surfacing exactly that rejection is the point of this app,
+  # so lib/smtp/smtp_transport.dart speaks SMTP directly instead.
+  enough_mail: ^2.1.7
+
+  # HMAC-MD5 for CRAM-MD5 authentication
+  crypto: ^3.0.6
+
+  # Rich text composition -> HTML
+  flutter_quill: ^11.6.0
+  vsc_quill_delta_to_html: ^1.0.5
+
+  # Attachments
+  file_picker: ^13.1.0
+  mime: ^2.1.0
+  receive_sharing_intent: ^1.9.0
+
+  # Outbox background retry
+  workmanager: ^0.10.10
+  connectivity_plus: ^7.3.1
+
+  # Optional app lock
+  local_auth: ^3.0.2
+
+  # Encrypted configuration export/import (Argon2id + AES-GCM)
+  cryptography: ^2.9.0
+
+  # Misc
+  go_router: ^18.0.1
+  uuid: ^4.6.0
+  intl: ^0.20.3
+  collection: ^1.19.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+  # drift code generation
+  drift_dev: ^2.35.0
+  build_runner: ^2.16.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # Bundled so the full GPL text can be read inside the app, on the
+    # Settings -> Open source licences page.
+    - LICENSE

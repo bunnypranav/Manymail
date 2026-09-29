@@ -1,0 +1,37 @@
+# Normalise line endings. Checked in as LF, checked out native.
+* text=auto eol=lf
+
+# Windows-only files keep CRLF.
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+gradlew.bat     text eol=crlf
+
+# Shell scripts and the Gradle wrapper must stay LF to be executable.
+*.sh            text eol=lf
+gradlew         text eol=lf
+
+# Explicitly text, so a stray control character never flips them to binary
+# and hides a diff. tool/fake_smtp_server.dart used to carry a literal NUL.
+*.dart          text
+*.py            text
+*.md            text
+*.yaml          text
+*.xml           text
+*.kts           text
+
+# Binary assets.
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.webp          binary
+*.jks           binary
+*.keystore      binary
+*.otf           binary
+*.ttf           binary
+
+# Generated. Diffs are noise in review, but the file is still versioned.
+*.g.dart        linguist-generated=true -diff
+
+# Keep GitHub's language stats about the app, not the store copy.
+store/**        linguist-documentation=true
+docs/**         linguist-documentation=true

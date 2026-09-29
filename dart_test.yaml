@@ -1,0 +1,8 @@
+# Test tags.
+#
+# `integration` marks tests that open real sockets against the local fake SMTP
+# server in tool/fake_smtp_server.dart. They need no network access beyond
+# loopback and run by default; tag them out with
+# `flutter test --exclude-tags integration` if that is ever unwanted.
+tags:
+  integration:

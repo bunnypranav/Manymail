@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy &middot; Manymail</title>
+<meta name="description" content="Manymail collects no data. No analytics, no telemetry, no account. Everything stays on your device.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1c1e;
+    --muted: #5c6066;
+    --rule: #e3e5e8;
+    --accent: #3a5bd9;
+    --code-bg: #f3f4f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181c;
+      --fg: #e6e8ea;
+      --muted: #9aa0a6;
+      --rule: #2c2f35;
+      --accent: #8fa8ff;
+      --code-bg: #22252b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c;
+    --fg: #e6e8ea;
+    --muted: #9aa0a6;
+    --rule: #2c2f35;
+    --accent: #8fa8ff;
+    --code-bg: #22252b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 16px 5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; letter-spacing: -.02em; }
+  h2 {
+    font-size: 1.22rem; margin: 2.6rem 0 .8rem; padding-top: 1.4rem;
+    border-top: 1px solid var(--rule); letter-spacing: -.01em;
+  }
+  p { margin: 0 0 1rem; }
+  a { color: var(--accent); }
+  ul { padding-left: 1.3rem; margin: 0 0 1rem; }
+  li { margin-bottom: .45rem; }
+  code {
+    background: var(--code-bg); padding: .12em .38em; border-radius: 4px;
+    font: .875em/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    word-break: break-word;
+  }
+  strong { font-weight: 650; }
+  .meta { color: var(--muted); font-size: .92rem; margin-bottom: 2rem; }
+  .meta div { margin-bottom: .15rem; }
+  .table-wrap { overflow-x: auto; margin: 0 0 1.4rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+  th, td {
+    text-align: left; padding: .55rem .7rem;
+    border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  th { font-weight: 650; white-space: nowrap; }
+  footer {
+    margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: .88rem;
+  }
+</style>
+</head>
+<body>
+<main>
+<h1>Manymail privacy policy</h1>
+<div class="meta"><div><strong>Last updated: 29 September 2026</strong></div><div><strong>Applies to: Manymail for Android (<code>com.bunnypranav.manymail</code>), all versions</strong></div></div>
+<h2>The short version</h2>
+<p>Manymail collects nothing. There is no account, no sign-up, no analytics, no crash reporting, no advertising and no server operated by me. Everything the app knows stays on your device, except the messages you choose to send — which go directly to the SMTP server <strong>you</strong> configured, and nowhere else.</p>
+<p>I cannot see your messages, your addresses, your domains or your passwords. Not because I promise not to look, but because nothing is ever sent to me.</p>
+<h2>Who is responsible</h2>
+<p>Manymail is published by <strong>Bunny Pranav</strong>, an individual developer.</p>
+<p>Contact: <code>manymail@bunnyorg.in</code></p>
+<h2>What the app stores on your device</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>What</th><th>Where</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Domain and server settings (label, domain, host, port, security mode, username)</td><td>App-private SQLite database</td><td>Never leaves the device</td></tr>
+<tr><td><strong>SMTP passwords</strong></td><td><strong>Android Keystore</strong>, via <code>EncryptedSharedPreferences</code></td><td>Encrypted at rest. Never written to the database, a log, an error message or an unencrypted export</td></tr>
+<tr><td>Identity presets (local parts, display names, signatures)</td><td>App-private SQLite database</td><td>Never leaves the device</td></tr>
+<tr><td>Drafts, queued messages and the sent log — including recipients, subjects and message bodies</td><td>App-private SQLite database</td><td>Never leaves the device</td></tr>
+<tr><td>Attachments you add</td><td>App-private storage</td><td>Kept after sending only if you enable that setting</td></tr>
+<tr><td>SMTP protocol transcripts</td><td>App-private SQLite database</td><td>Credentials are stripped before the transcript is ever written</td></tr>
+<tr><td>App preferences</td><td>App-private SQLite database</td><td>Never leaves the device</td></tr>
+</tbody></table></div>
+<p>"App-private" means Android's per-app sandbox: other apps cannot read it.</p>
+<h2>What is transmitted, and to whom</h2>
+<p>Exactly one thing: <strong>the messages you send.</strong></p>
+<p>When you tap Send, Manymail opens a connection to the SMTP server you entered and transmits your message to it — the sender address, recipients, subject, body and attachments — together with the username and password you saved, in order to authenticate.</p>
+<p>That server is yours, or your mail provider's. It is not mine. What happens to your message after it reaches that server is governed by that provider's privacy policy, not this one.</p>
+<p>Manymail makes <strong>no other network connection of any kind</strong>. No telemetry, no update check, no remote configuration, no font or asset fetching, no error reporting.</p>
+<h2>Data collected or shared with the developer or third parties</h2>
+<p><strong>None.</strong></p>
+<p>For the purposes of Google Play's Data safety disclosure: Manymail collects no data, shares no data, and has no data-deletion mechanism to offer because it holds nothing about you. Uninstalling the app removes everything it stored.</p>
+<h2>Encryption</h2>
+<ul>
+<li><strong>In transit.</strong> Whether your message is encrypted on its way to your SMTP server depends on the security mode you pick for that domain: Implicit TLS (usually port 465) and STARTTLS (usually port 587) are encrypted; "None" (usually port 25) is not. The app shows you which you have chosen and warns before sending credentials over an unencrypted connection.</li>
+<li><strong>"Allow insecure certificate"</strong> is an off-by-default, per-domain setting for self-signed servers. Turning it on disables certificate validation for that domain, which means the connection can be intercepted. The app tells you so at the point you enable it.</li>
+<li><strong>At rest.</strong> SMTP passwords are encrypted under the Android Keystore. Configuration exports you protect with a passphrase use Argon2id key derivation and AES-GCM-256.</li>
+</ul>
+<h2>Permissions, and why each exists</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Permission</th><th>Why</th></tr></thead><tbody>
+<tr><td><code>INTERNET</code></td><td>To reach the SMTP servers you configure. This is the only thing it is used for.</td></tr>
+<tr><td><code>ACCESS_NETWORK_STATE</code></td><td>To hold a queued message back until the device actually has a network, instead of waking up to fail.</td></tr>
+<tr><td><code>WAKE_LOCK</code>, <code>RECEIVE_BOOT_COMPLETED</code></td><td>Required by Android's WorkManager so a queued message can be retried in the background and pending retries survive a reboot.</td></tr>
+<tr><td><code>USE_BIOMETRIC</code>, <code>USE_FINGERPRINT</code></td><td>Only if you enable the optional app lock. No biometric data is read, stored or transmitted — Android reports only success or failure. <code>USE_FINGERPRINT</code> is the pre-Android-10 equivalent.</td></tr>
+<tr><td><code>DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION</code></td><td>Generated automatically by Android's own AndroidX libraries. It is a signature-level permission that only this app can hold; it grants no access to anything.</td></tr>
+</tbody></table></div>
+<p>Every one of these is granted at install time. <strong>Manymail never shows a runtime permission prompt</strong>, because it never asks for anything that needs one.</p>
+<p>Three permissions that Android's WorkManager library declares by default have been <strong>deliberately removed</strong> from the app, because Manymail does not use them: <code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_SHORT_SERVICE</code> and <code>POST_NOTIFICATIONS</code>. The app runs no foreground service and posts no notifications.</p>
+<p>Manymail requests <strong>no</strong> access to your contacts, location, camera, microphone, call logs, SMS, or the device advertising ID.</p>
+<h2>Children</h2>
+<p>Manymail is not directed at children and collects no data from anyone, including children under 13.</p>
+<h2>Your rights</h2>
+<p>Because no personal data ever reaches me, there is no data of yours for me to provide, correct, export or erase. You control all of it directly on the device: delete individual messages or domains in the app, or uninstall it to remove everything at once.</p>
+<h2>Verifying any of this</h2>
+<p>Manymail is free software under the GNU General Public License v3.0. The complete source is published at <code>https://github.com/bunnypranav/Manymail</code>. You do not have to take these claims on trust — you can read the code, or build the app yourself and compare it to what is on the Play Store.</p>
+<h2>Changes to this policy</h2>
+<p>If this policy changes, the updated version will be published at the same URL with a new "Last updated" date, and material changes will be noted in the release notes of the version that introduces them.</p>
+<h2>Contact</h2>
+<p><code>manymail@bunnyorg.in</code></p>
+<footer>
+  Manymail is free software under the GNU General Public License v3.0.
+  This page is generated from <code>PRIVACY.md</code> in the source repository.
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manymail &middot; Many addresses, one app</title>
+<meta name="description" content="A send-only Android mail client for your own domains, with a genuinely free-form sender address. No inbox, no sync, no telemetry.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1c1e;
+    --muted: #5c6066;
+    --rule: #e3e5e8;
+    --accent: #3a5bd9;
+    --code-bg: #f3f4f6;
+    --card: #fafbfc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181c; --fg: #e6e8ea; --muted: #9aa0a6; --rule: #2c2f35;
+      --accent: #8fa8ff; --code-bg: #22252b; --card: #1b1e23;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c; --fg: #e6e8ea; --muted: #9aa0a6; --rule: #2c2f35;
+    --accent: #8fa8ff; --code-bg: #22252b; --card: #1b1e23;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--fg); margin: 0;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 3.5rem 16px 5rem; }
+  h1 { font-size: 2.4rem; margin: 0 0 .3rem; letter-spacing: -.03em; }
+  .tagline { color: var(--muted); font-size: 1.12rem; margin: 0 0 2.2rem; }
+  h2 {
+    font-size: 1.2rem; margin: 2.8rem 0 .9rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--rule); letter-spacing: -.01em;
+  }
+  p { margin: 0 0 1rem; }
+  a { color: var(--accent); }
+  ul { padding-left: 1.25rem; }
+  li { margin-bottom: .5rem; }
+  code {
+    background: var(--code-bg); padding: .12em .38em; border-radius: 4px;
+    font: .875em/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    word-break: break-word;
+  }
+  .lead {
+    background: var(--card); border: 1px solid var(--rule);
+    border-radius: 10px; padding: 1.1rem 1.3rem; margin: 0 0 1.6rem;
+  }
+  .lead p:last-child { margin-bottom: 0; }
+  .from {
+    background: var(--code-bg); border-radius: 8px;
+    padding: 1rem 1.1rem; margin: 1.2rem 0 1.6rem;
+  }
+  .from-line {
+    font: .95rem/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-x: auto; white-space: nowrap;
+    padding-bottom: .9rem; margin-bottom: .9rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .from dl {
+    margin: 0; display: grid; grid-template-columns: auto 1fr;
+    gap: .35rem .9rem; align-items: baseline;
+  }
+  .from dt {
+    font: .85rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: nowrap;
+  }
+  .from dd { margin: 0; color: var(--muted); font-size: .88rem; }
+  @media (max-width: 30rem) {
+    .from dl { grid-template-columns: 1fr; gap: 0; }
+    .from dd { margin-bottom: .6rem; }
+  }
+  nav { margin: 2.4rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; }
+  footer {
+    margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: .88rem;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Manymail</h1>
+  <p class="tagline">Many addresses, one app.</p>
+
+  <div class="lead">
+    <p>A <strong>send-only</strong> Android mail client for domains you own,
+    where the sender address is genuinely free-form. Pick the domain once;
+    type whatever alias and display name you want at compose time.</p>
+  </div>
+
+  <p>Desktop clients have allowed this for decades. Almost every Android mail
+  app does not: the From address is welded to the account you signed in with,
+  so <code>billing@</code>, <code>no-reply@</code> or a one-off alias on your
+  own domain is simply unreachable from a phone. Manymail exists because that
+  restriction is a client-side choice, not a protocol one.</p>
+
+  <div class="from">
+    <div class="from-line">"Billing" &lt;billing@example.com&gt;</div>
+    <dl>
+      <dt>"Billing"</dt><dd>display name &mdash; free text, every time</dd>
+      <dt>billing</dt><dd>alias &mdash; free text, every time</dd>
+      <dt>example.com</dt><dd>chosen from the domains you configured once</dd>
+    </dl>
+  </div>
+
+  <p>Your saved SMTP credentials authenticate the <em>connection</em>. They do
+  not constrain the <em>identity</em>.</p>
+
+  <h2>What it does</h2>
+  <ul>
+    <li>Any alias and display name, on any domain you have configured.</li>
+    <li>Rich text or plain text, attachments, inline images, Reply-To and
+      custom headers.</li>
+    <li>Drafts, an outbox that retries with exponential backoff, and a local
+      sent log.</li>
+    <li>Per-domain SMTP settings &mdash; STARTTLS, implicit TLS or none, with
+      PLAIN, LOGIN or CRAM-MD5 authentication and a connection test that shows
+      you every step.</li>
+    <li>Encrypted configuration backup, and an optional app lock.</li>
+  </ul>
+
+  <h2>What it deliberately does not do</h2>
+  <ul>
+    <li><strong>No inbox.</strong> No IMAP, no POP, no sync. It sends.</li>
+    <li><strong>No telemetry.</strong> No analytics, no crash reporting, no
+      ads. The only network connections are to the SMTP servers you enter.</li>
+    <li><strong>No second-guessing your server.</strong> Many servers refuse a
+      From address the authenticated account does not own. Manymail does not
+      try to predict that &mdash; it sends as typed and shows you the server's
+      reply, word for word, with the protocol transcript if you want it.</li>
+  </ul>
+
+  <h2>Your passwords</h2>
+  <p>SMTP passwords live in the Android Keystore and nowhere else. They are
+  never written to the app's database, never logged, and redacted from every
+  protocol transcript before it is stored. An unencrypted configuration export
+  leaves them out entirely and says so in the file.</p>
+
+  <h2>Free software</h2>
+  <p>Manymail is licensed under the GNU General Public License v3.0 or later.
+  The complete source is public: read it, build it, fork it. Forks must stay
+  under the GPL and keep the copyright notice.</p>
+
+  <nav>
+    <a href="https://github.com/bunnypranav/Manymail">Source code</a>
+    <a href="privacy-policy.html">Privacy policy</a>
+    <a href="https://github.com/bunnypranav/Manymail/releases">Releases</a>
+    <a href="https://github.com/bunnypranav/Manymail/issues">Report a bug</a>
+  </nav>
+
+  <footer>
+    &copy; 2026 Bunny Pranav &middot; GPL-3.0-or-later &middot;
+    Not affiliated with Google. Android is a trademark of Google LLC.
+  </footer>
+</main>
+</body>
+</html>
