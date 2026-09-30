@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Manymail &middot; Many addresses, one app</title>
 <meta name="description" content="A send-only Android mail client for your own domains, with a genuinely free-form sender address. No inbox, no sync, no telemetry.">
+<link rel="icon" type="image/png" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 <style>
   :root {
     --bg: #ffffff;
@@ -34,7 +36,11 @@
   }
   main { max-width: 44rem; margin: 0 auto; padding: 3.5rem 16px 5rem; }
   h1 { font-size: 2.4rem; margin: 0 0 .3rem; letter-spacing: -.03em; }
-  .tagline { color: var(--muted); font-size: 1.12rem; margin: 0 0 2.2rem; }
+  .hero { text-align: center; }
+  .logo { display: block; margin: 0 auto 1.2rem; border-radius: 22px; }
+  .tagline { color: var(--muted); font-size: 1.12rem; margin: 0 0 1.4rem; }
+  .play { display: inline-block; margin: 0 0 2.2rem; }
+  .play img { display: block; }
   h2 {
     font-size: 1.2rem; margin: 2.8rem 0 .9rem; padding-top: 1.5rem;
     border-top: 1px solid var(--rule); letter-spacing: -.01em;
@@ -85,8 +91,14 @@
 </head>
 <body>
 <main>
-  <h1>Manymail</h1>
-  <p class="tagline">Many addresses, one app.</p>
+  <header class="hero">
+    <img class="logo" src="icon-512.png" alt="" width="96" height="96">
+    <h1>Manymail</h1>
+    <p class="tagline">Many addresses, one app.</p>
+    <a class="play" href="https://play.google.com/store/apps/details?id=com.bunnypranav.manymail">
+      <img src="playbadge.svg" alt="Get it on Google Play" width="216" height="64">
+    </a>
+  </header>
 
   <div class="lead">
     <p>A <strong>send-only</strong> Android mail client for domains you own,
@@ -148,6 +160,7 @@
   under the GPL and keep the copyright notice.</p>
 
   <nav>
+    <a href="https://play.google.com/store/apps/details?id=com.bunnypranav.manymail">Google Play</a>
     <a href="https://github.com/bunnypranav/Manymail">Source code</a>
     <a href="privacy-policy.html">Privacy policy</a>
     <a href="https://github.com/bunnypranav/Manymail/releases">Releases</a>

@@ -1,6 +1,14 @@
+<div align="center">
+
+![Manymail icon](docs/icon-160.png)
+
 # Manymail
 
 **Many addresses, one app.**
+
+[![Get it on Google Play](docs/playbadge.svg)](https://play.google.com/store/apps/details?id=com.bunnypranav.manymail)
+
+</div>
 
 A **send-only** Android mail client for domains you own, where the sender
 address is genuinely free-form. Configure a domain and its SMTP server once;
