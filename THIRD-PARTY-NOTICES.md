@@ -67,6 +67,19 @@ without inspecting the reply, so a `5xx` sender rejection is swallowed and the
 send reports success. Surfacing exactly that rejection is the point of this
 app.
 
+## Vendored source: SQLite
+
+[`third_party/sqlite/`](third_party/sqlite/) holds the SQLite 3.53.4
+amalgamation (`sqlite3.c`, `sqlite3.h`, `sqlite3ext.h`), unmodified, and the
+build compiles it into `libsqlite3.so`.
+
+SQLite is in the **public domain** — <https://sqlite.org/copyright.html> — so it
+imposes no conditions and is compatible with any licence, GPL-3.0 included.
+
+It is vendored rather than downloaded because `package:sqlite3`'s build hook
+otherwise fetches a precompiled library at build time. See
+[`third_party/sqlite/README.md`](third_party/sqlite/README.md).
+
 ## Reading the licences in the app
 
 Settings → About → **Open source licences** shows the full licence text of

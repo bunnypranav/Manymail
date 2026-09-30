@@ -79,3 +79,14 @@ flutter:
     # Bundled so the full GPL text can be read inside the app, on the
     # Settings -> Open source licences page.
     - LICENSE
+
+hooks:
+  user_defines:
+    # package:sqlite3's build hook downloads a precompiled libsqlite3.so from
+    # GitHub by default. Compile it from the vendored amalgamation instead, so
+    # every build -- Play, F-Droid, or yours -- ships a SQLite built from source
+    # that anyone can inspect. F-Droid requires this; it forbids prebuilt
+    # native binaries. See third_party/sqlite/README.md.
+    sqlite3:
+      source: source
+      path: third_party/sqlite/sqlite3.c

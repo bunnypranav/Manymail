@@ -114,8 +114,18 @@ control on a provider that authorises per-domain rather than per-mailbox.
 
 ## Building it yourself
 
-You need the [Flutter SDK](https://docs.flutter.dev/get-started/install) and
-the Android SDK. Then:
+You need:
+
+- the [Flutter SDK](https://docs.flutter.dev/get-started/install) — the version
+  releases are built with is in [`.flutter-version`](.flutter-version)
+- the Android SDK, with **NDK `28.2.13676358`** (r28c)
+- a C compiler for your own machine — Visual Studio Build Tools on Windows,
+  Xcode command-line tools on macOS, `clang` or `gcc` on Linux
+
+The last two are because Manymail compiles SQLite from source rather than
+downloading a prebuilt library; see
+[`third_party/sqlite/README.md`](third_party/sqlite/README.md). The NDK builds it
+for Android, and the host compiler builds it for `flutter test`.
 
 ```bash
 flutter pub get
@@ -131,16 +141,18 @@ A debug build, on a connected device or emulator:
 flutter run
 ```
 
-A release APK:
+A release build, one APK per CPU architecture:
 
 ```bash
 flutter build apk --release --split-per-abi
 ```
 
-Without an `android/key.properties` the release build is signed with the debug
-key, which installs locally but is not distributable. The build prints a
-warning when that happens. [`ARCHITECTURE.md`](ARCHITECTURE.md) has the signing
-setup and the rest of the build configuration.
+Without an `android/key.properties` the release APKs are **unsigned** and will
+not install until you sign them — that is what F-Droid's build server needs.
+For a quick install without a keystore, use `flutter run` or
+`flutter build apk --debug`. [`ARCHITECTURE.md`](ARCHITECTURE.md) has the
+signing setup, the per-ABI version codes and the rest of the build
+configuration.
 
 ### Trying it without a real mail server
 
@@ -238,6 +250,11 @@ by the Android Keystore.
 
 **The envelope sender is the address you typed,** not the SMTP username. That
 is what triggers server rejections, and showing them is a feature.
+
+**Every native library is built from source,** SQLite included. The SQLite
+amalgamation is vendored in [`third_party/sqlite/`](third_party/sqlite/) and
+compiled by the build instead of being downloaded prebuilt, so the APK contains
+nothing that cannot be rebuilt from this repository.
 
 **119 tests**, including integration tests that drive a local fake SMTP server
 through sender rejection, transient failure, STARTTLS and each auth mechanism.

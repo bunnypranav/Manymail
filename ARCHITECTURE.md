@@ -306,19 +306,100 @@ What the suite covers:
 
 ---
 
----
-
 ## Build configuration notes
 
+### SQLite is compiled from source
 
-Three non-default settings, each with a reason:
+`package:sqlite3`'s build hook downloads a precompiled `libsqlite3.so` from
+GitHub unless told otherwise. `pubspec.yaml` tells it otherwise:
 
-- `android/app/build.gradle.kts` does **not** set `ndkVersion`. Nothing here
-  compiles native source, and leaving it set makes Gradle try to auto-install
-  the NDK through the deprecated `sdkmanager` shim, which crashes on current
-  cmdline-tools.
-- `compileSdk` is 37 rather than 36, because a dependency requires it.
-  `targetSdk` stays at 36, so runtime behaviour is unchanged.
+```yaml
+hooks:
+  user_defines:
+    sqlite3:
+      source: source
+      path: third_party/sqlite/sqlite3.c
+```
+
+The amalgamation in `third_party/sqlite/` is the exact SQLite release the
+package would have downloaded (3.53.4 for `sqlite3` 3.5.2), so behaviour did
+not change. After stripping, the library in the APK is byte-identical to the
+one compiled from that file, and a database written by the old prebuilt library
+opens unchanged.
+
+F-Droid forbids prebuilt native binaries, which is why this exists. It applies
+to every build so that Play and F-Droid ship the same SQLite.
+
+The hook compiles for each Android ABI with the NDK, and for the host during
+`flutter test`. `flutter build apk` does **not** compile for the host, so a
+build server needs only the NDK.
+
+### Release signing
+
+`android/key.properties` present → release builds are signed with the upload
+key. Absent → release builds are **unsigned**, because F-Droid's recipe output
+must be an unsigned APK. Setting `MANYMAIL_UNSIGNED=true` forces an unsigned
+build even with a keystore present, to reproduce F-Droid's output locally.
+
+If `key.properties` names a keystore that does not exist, the build **fails**
+rather than falling back to an unsigned or debug build. `storeFile` separators
+are normalised, because a `.properties` file treats a backslash as an escape
+and silently mangles `D:\path\to\key.jks`.
+
+### Version codes per ABI
+
+`flutter build apk --split-per-abi` produces one APK per CPU architecture, and
+each needs its own version code:
+
+| pubspec | armeabi-v7a | arm64-v8a | x86_64 |
+|---|---|---|---|
+| `1.0.0+1` | 11 | 12 | 13 |
+
+That is `versionCode × 10 + abi`, the scheme fdroiddata's Flutter template
+expects. Flutter's own scheme, `abi × 1000 + versionCode`, is switched off with
+`force-version-code-ignoring-abi=true` in `android/gradle.properties`: it puts
+the ABI in the highest digits, so an old arm64 build would outrank every later
+armeabi-v7a build and block updates.
+
+The override in `build.gradle.kts` touches only outputs that carry an ABI
+filter. The Play App Bundle and a universal APK keep the plain pubspec version
+code.
+
+`tool/fdroid_changelogs.py` writes the matching F-Droid changelogs, one per
+ABI version code, from a single notes file.
+
+### No dependency-info block in APKs
+
+`dependenciesInfo { includeInApk = false }`. By default AGP writes the
+dependency list into each signed APK's signing block, encrypted to a key only
+Google holds. F-Droid asks apps to turn it off, and it would break any
+reproducible-build comparison. It stays on for the App Bundle, where Play
+Console uses it to flag known-vulnerable SDKs.
+
+### Other non-default settings
+
+- `android/app/build.gradle.kts` does **not** set `ndkVersion`. Flutter's
+  plugin supplies its own (`28.2.13676358` for Flutter 3.47.4), and setting it
+  here makes Gradle try to auto-install the NDK through the deprecated
+  `sdkmanager` shim, which crashes on current cmdline-tools. Install the NDK
+  through Android Studio instead.
+- `compileSdk` is 37 rather than 36, because `receive_sharing_intent` compiles
+  against 37. `targetSdk` stays at 36, so runtime behaviour is unchanged.
+- `compileSdkMinor = 0` accompanies it. Android 17 ships as the platform
+  package `android-37.0`, but AGP turns a bare `compileSdk = 37` into the
+  lookup hash `android-37`. That resolves when the platform was installed
+  beforehand and fails when Gradle installs it mid-build — which is every
+  fresh CI runner and F-Droid's build server — with *"Failed to find target
+  with hash string 'android-37'"*. The minor level makes AGP ask for
+  `android-37.0`. Verified by building against an SDK with API 37 absent:
+  fails without it, passes with it.
+- The same fix is applied to **plugin** modules from `android/build.gradle.kts`,
+  because `receive_sharing_intent` sets a bare `compileSdk 37` in its own build
+  file, which lives in the pub cache and cannot be edited. A
+  `finalizeDsl` callback adds the minor level to any library module asking for
+  a bare 37, after its script runs and before AGP locks the DSL. Checked by
+  printing every module's resolved `compileSdkVersion`: no module requests
+  `android-37`.
 - `android/gradle.properties` sets `kotlin.incremental=false` and
   `kotlin.compiler.execution.strategy=in-process`. Kotlin's incremental
   compiler leaves `.tab` cache files locked on Windows, failing the build with

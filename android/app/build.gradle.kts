@@ -8,15 +8,22 @@ plugins {
 
 // Release signing is opt-in: drop a `key.properties` next to this module's
 // parent (android/key.properties) and the release build picks it up with no
-// code change. Without it the release build is signed with the debug key, so
-// `flutter build apk --release` still works for local installs — but the
-// resulting APK is NOT distributable.
+// code change. Without it, release builds are UNSIGNED.
+//
+// Unsigned, not debug-signed, because that is what F-Droid requires: its build
+// server has no key.properties, and the `output` of an F-Droid recipe must be
+// an unsigned APK that F-Droid then signs itself. The same unsigned build is
+// what a reproducible-build check compares against. For a quick local install
+// without a keystore, use `flutter run` or `flutter build apk --debug`.
+//
+// MANYMAIL_UNSIGNED=true forces an unsigned build even when key.properties is
+// present, so you can produce exactly what F-Droid produces and diff the two.
 //
 // android/key.properties (gitignored):
-//   storeFile=/absolute/path/to/manymail-release.jks
+//   storeFile=D:/path/to/manymail-upload.jks   <- forward slashes, see below
 //   storePassword=...
 //   keyAlias=manymail
-//   keyPassword=...
+//   keyPassword=...                            <- optional if the same
 val keystorePropertiesFile = rootProject.file("key.properties")
 val keystoreProperties = Properties().apply {
     if (keystorePropertiesFile.exists()) {
@@ -39,6 +46,8 @@ val releaseKeystore: File? = storeFileProperty
     ?.takeIf { it.isNotBlank() }
     ?.let { resolveKeystore(it) }
 val hasReleaseKeystore = releaseKeystore?.exists() == true
+val forceUnsigned = System.getenv("MANYMAIL_UNSIGNED")?.lowercase() == "true"
+val signRelease = hasReleaseKeystore && !forceUnsigned
 
 // Naming a keystore that is not there is always a mistake worth stopping for.
 // Falling through to the debug key would produce something that looks like a
@@ -55,15 +64,37 @@ if (storeFileProperty != null && !hasReleaseKeystore) {
 
 android {
     namespace = "com.bunnypranav.manymail"
+    // 37 because receive_sharing_intent compiles against it. Android 17 is
+    // published as the platform package "android-37.0", but AGP turns a bare
+    // `compileSdk = 37` into the lookup hash "android-37". Where the platform
+    // was installed beforehand that still resolves; where Gradle installs it
+    // mid-build, as on a fresh CI or F-Droid build server, the build fails with
+    // "Failed to find target with hash string 'android-37'". The minor level
+    // makes AGP ask for "android-37.0" and fixes it everywhere.
     compileSdk = 37
-    // No plugin in this project compiles native source, so the NDK is not
-    // required. Leaving `ndkVersion = flutter.ndkVersion` set makes Gradle try
-    // to auto-install it through the deprecated sdkmanager shim, which crashes
-    // on the current cmdline-tools. Re-add it if a future dependency needs it.
+    compileSdkMinor = 0
+
+    // ndkVersion is deliberately not set: Flutter's plugin supplies its own
+    // (28.2.13676358 for Flutter 3.47.4), which is what compiles SQLite and the
+    // jni library. Setting it here makes Gradle try to auto-install the NDK
+    // through the deprecated sdkmanager shim, which crashes on current
+    // cmdline-tools. Install it through Android Studio instead.
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    // By default AGP writes a list of the app's dependencies into the APK's
+    // signing block, encrypted with a key only Google holds. It is an opaque
+    // blob in every signed APK, F-Droid asks apps to turn it off, and it would
+    // break a reproducible-build comparison against F-Droid's own build.
+    //
+    // The App Bundle keeps it: Play Console reads it to flag known-vulnerable
+    // SDK versions, and it never reaches a device from there.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = true
     }
 
     defaultConfig {
@@ -94,11 +125,9 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (hasReleaseKeystore) {
-                signingConfigs.getByName("release")
-            } else {
-                // Debug-signed so a release build still installs locally.
-                signingConfigs.getByName("debug")
+            // Left unset otherwise, which AGP builds as an unsigned APK.
+            if (signRelease) {
+                signingConfig = signingConfigs.getByName("release")
             }
 
             // Shrink and obfuscate. The rules file keeps the reflective bits
@@ -113,13 +142,42 @@ android {
     }
 }
 
-// A loud, unmissable note in the build output rather than a silently
-// debug-signed "release" APK.
-if (!hasReleaseKeystore) {
+// Say which one this is, so an unsigned build is never mistaken for a signed one.
+if (!signRelease) {
     logger.lifecycle(
-        "Manymail: android/key.properties not found — release builds will be " +
-            "signed with the DEBUG key and are not distributable."
+        if (forceUnsigned) {
+            "Manymail: MANYMAIL_UNSIGNED=true — release builds are UNSIGNED."
+        } else {
+            "Manymail: android/key.properties not found — release builds are " +
+                "UNSIGNED, as F-Droid requires. They will not install until signed."
+        }
     )
+}
+
+// F-Droid publishes one APK per ABI, each with its own version code, and needs
+// them ordered so that every build of a newer release outranks every build of
+// an older one. Flutter's own scheme (abi * 1000 + versionCode) gets that
+// backwards; it is switched off in gradle.properties and replaced with
+// versionCode * 10 + abi, the scheme fdroiddata's Flutter template expects:
+//
+//   1.0.0+1  ->  armeabi-v7a 11, arm64-v8a 12, x86_64 13
+//   1.0.1+2  ->  armeabi-v7a 21, arm64-v8a 22, x86_64 23
+//
+// Only outputs carrying an ABI filter are touched. A universal APK and the Play
+// App Bundle keep the plain pubspec version code.
+val abiDigits = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86_64" to 3)
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            val abi = output.filters.firstOrNull {
+                it.filterType ==
+                    com.android.build.api.variant.FilterConfiguration.FilterType.ABI
+            }?.identifier ?: return@forEach
+            val digit = abiDigits[abi] ?: return@forEach
+            output.versionCode.set(flutter.versionCode * 10 + digit)
+        }
+    }
 }
 
 kotlin {

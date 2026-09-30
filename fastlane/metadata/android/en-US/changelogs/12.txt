@@ -1,0 +1,9 @@
+First release on F-Droid.
+
+Send mail from any address on a domain you own: you pick the part before the @ and the display name every time you write.
+
+• Free-form sender identity, per-domain SMTP with STARTTLS or implicit TLS
+• Rich text, attachments, inline images, custom headers
+• Drafts, a retrying outbox and a sent log
+• Passwords kept in the Android Keystore
+• No inbox, no account, no tracking; SQLite built from source

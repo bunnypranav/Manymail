@@ -55,6 +55,10 @@ android/key.properties
 # Configuration exports may contain SMTP passwords
 *.mmconfig.json
 
-# Play Store publishing material — listing copy, console answers, graphics and
-# the scripts that build them. Not useful to anyone reading the source.
+# Store publishing material — Play console answers, the F-Droid submission
+# guide and recipe draft, graphics and the scripts that build them. Not useful
+# to anyone reading the source.
+#
+# fastlane/ is deliberately NOT ignored: F-Droid reads the app's listing,
+# screenshots and changelogs from it in the public repository.
 store/

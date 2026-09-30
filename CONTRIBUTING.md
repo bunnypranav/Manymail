@@ -53,11 +53,35 @@ list of packages and that is intentional.
 
 ## Getting set up
 
+You need the Flutter version in `.flutter-version`, the Android NDK
+`28.2.13676358`, and a C compiler for your own machine (Visual Studio Build
+Tools, Xcode command-line tools, or `clang`/`gcc`). SQLite is compiled from
+`third_party/sqlite/` rather than downloaded, and `flutter test` compiles it for
+the host.
+
     flutter pub get
     dart run build_runner build --delete-conflicting-outputs
     flutter test
 
 `build_runner` generates the drift database code; nothing compiles without it.
+
+Without `android/key.properties`, `flutter build apk --release` produces
+**unsigned** APKs, which will not install. Use `flutter run` or
+`flutter build apk --debug` to try a change on a device.
+
+## Things that must stay true for F-Droid
+
+Manymail is distributed through F-Droid, which builds it from this repository.
+A change that breaks one of these breaks that build:
+
+- **No prebuilt native binaries, and no downloads at build time.** Leave the
+  `hooks:` block in `pubspec.yaml` alone. A new dependency that downloads or
+  bundles a `.so`, `.jar` or `.aar` needs discussing first.
+- **No non-free dependencies.** No Google Play Services, Firebase, Play Core,
+  ML Kit, or proprietary analytics or ad SDKs — even optional ones.
+- **`fastlane/metadata/android/en-US/` is the F-Droid listing.** Keep the
+  character limits: title 50, short description 80, full description 4000,
+  each changelog 500. `python tool/fdroid_changelogs.py` checks the changelogs.
 
 ## Before you open a pull request
 

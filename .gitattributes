@@ -32,6 +32,14 @@ gradlew         text eol=lf
 # Generated. Diffs are noise in review, but the file is still versioned.
 *.g.dart        linguist-generated=true -diff
 
+# Vendored SQLite: 9.5 MB of upstream C, never edited here. Keep it out of the
+# language stats (it would otherwise make the repo read as "90% C") and out of
+# diffs, which would be unreadable anyway.
+third_party/**  linguist-vendored=true
+third_party/sqlite/*.c  -diff
+third_party/sqlite/*.h  -diff
+
 # Keep GitHub's language stats about the app, not the store copy.
 store/**        linguist-documentation=true
 docs/**         linguist-documentation=true
+fastlane/**     linguist-documentation=true
