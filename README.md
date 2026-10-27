@@ -6,7 +6,8 @@
 
 **Many addresses, one app.**
 
-[![Get it on Google Play](docs/playbadge.svg)](https://play.google.com/store/apps/details?id=com.bunnypranav.manymail)
+<a href="https://play.google.com/store/apps/details?id=com.bunnypranav.manymail"><img src="docs/playbadge.svg" alt="Get it on Google Play" height="64" align="middle"></a>
+<a href="https://f-droid.org/packages/com.bunnypranav.manymail"><img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="100" align="middle"></a>
 
 </div>
 
